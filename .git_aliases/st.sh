@@ -3,11 +3,11 @@
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/_printColor.sh
 
-name="ci"
-description="ci description"
+name="st"
+description="Git status"
 
 function main(){
-  echo "ci"
+  git status
 }
 
 for i in $@

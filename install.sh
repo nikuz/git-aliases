@@ -65,11 +65,6 @@ function copyAlias(){
   chmod u+x $curHomeAliasPath
 }
 
-# modules for aliases work
-modules=("_config" "_clean" "_printColor")
-# aliases, which don't need ask user to install
-silentAliases=("pull")
-
 # arguments:
 # 1) array of modules (modules, silentAliases)
 # 2) current file name
@@ -121,15 +116,17 @@ do
         wait $pid
         break;;
 
-      [nN]* ) break;;
+      [nN]* )
+        dontInstalledAlias+=($curAliasName)
+        break;;
 
       * ) echo "Please write answer.";;
     esac
   done
-  echo ""
+  echo
 done
 
-echo ""
+echo
 echo "================"
 if [ ${#installedAlias[@]} -ne 0 ]
 then
@@ -137,7 +134,7 @@ then
   printf '%s\n' "${installedAlias[@]}"
 fi
 
-echo ""
+echo
 if [ ${#dontInstalledAlias[@]} -ne 0 ]
 then
   printC "Don't installed aliases:" red

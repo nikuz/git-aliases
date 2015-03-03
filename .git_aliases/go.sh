@@ -3,11 +3,16 @@
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/_printColor.sh
 
-name="ci"
-description="ci description"
+name="go"
+description="Git checkout"
 
 function main(){
-  echo "ci"
+  if [ -n "`git branch | grep -Poe "$1"`" ]
+  then
+      git checkout $1;
+  else
+      printC "'$1' branch doesn't exist" red;
+  fi;
 }
 
 for i in $@

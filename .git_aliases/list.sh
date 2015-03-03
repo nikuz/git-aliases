@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/_printColor.sh
+
 name="list"
 description="list description"
 
@@ -17,8 +20,9 @@ done
 
 if [ -n "$helpMode" ]
 then
-  echo $name
+  printC $name
   echo $description
+  printC $DIR/$name.sh gray
 else
 
   if [ -z "$installMode" ]

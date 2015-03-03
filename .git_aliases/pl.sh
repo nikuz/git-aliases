@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
-name="aliases"
-description="aliases description"
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/_printColor.sh
+
+name="pl"
+description="Git pull alias"
 
 function main(){
-  local branch=$(git branch | grep -Poe "\*.+" | sed 's/\* //')
+  local branch=$(git rev-parse --abbrev-ref HEAD)
   if [ -z "$1" ]
   then
     git pull origin $branch
@@ -23,8 +26,9 @@ done
 
 if [ -n "$helpMode" ]
 then
-  echo $name
+  printC $name
   echo $description
+  printC $DIR/$name.sh gray
 else
 
   if [ -z "$installMode" ]

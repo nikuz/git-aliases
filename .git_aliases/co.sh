@@ -1,10 +1,18 @@
 #!/usr/bin/env bash
 
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/_printColor.sh
+
 name="co"
-description="co description"
+description="Git pull current branch"
 
 function main(){
-  echo "co"
+  local branch=$(git rev-parse --abbrev-ref HEAD)
+  printC "Current branch is $branch"
+  git pl
+  wait $pid
+  printC "============================================"
+  git status
 }
 
 for i in $@
@@ -17,8 +25,9 @@ done
 
 if [ -n "$helpMode" ]
 then
-  echo $name
+  printC $name
   echo $description
+  printC $DIR/$name.sh gray
 else
 
   if [ -z "$installMode" ]

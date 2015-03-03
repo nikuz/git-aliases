@@ -8,6 +8,7 @@ printC(){
     ["green"]="\E[32;40m"
     ["cyan"]="\e[0;36m"
     ["red"]="\e[31m"
+    ["gray"]="\e[90m"
     ["nc"]="\e[0m" # No Color
   )
 
