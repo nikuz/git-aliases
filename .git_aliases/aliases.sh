@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 
-name="ci"
-description="ci description"
+name="aliases"
+description="aliases description"
 
 function main(){
-  echo "ci"
+  source _config.sh;
+
+  for file in $homeAliasesFolder/*
+  do
+    bash /$file -h
+    echo ""
+  done
 }
 
 for i in $@

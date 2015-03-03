@@ -3,14 +3,27 @@
 name="list"
 description="list description"
 
-if [ "$1" == "-h" ]
+function main(){
+  echo "list"
+}
+
+for i in $@
+do
+  if [ "$i" == "-h" ]
+  then
+    helpMode=true;
+  fi;
+done
+
+if [ -n "$helpMode" ]
 then
+  echo $name
   echo $description
 else
 
-  if [ -z "$installEnvironment" ]
+  if [ -z "$installMode" ]
   then
-    echo "list"
+    main $@
   fi
 
 fi

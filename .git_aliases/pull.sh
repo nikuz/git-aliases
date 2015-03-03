@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 
-name="ci"
-description="ci description"
+name="aliases"
+description="aliases description"
 
 function main(){
-  echo "ci"
+  local branch=$(git branch | grep -Poe "\*.+" | sed 's/\* //')
+  if [ -z "$1" ]
+  then
+    git pull origin $branch
+  else
+    git pull origin $1:$1
+  fi;
 }
 
 for i in $@

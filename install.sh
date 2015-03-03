@@ -1,27 +1,41 @@
 #!/usr/bin/env bash
 
-installEnvironment=true
-aliasesFolder=".git_aliases"
+source .git_aliases/_config.sh;
+source .git_aliases/_printColor.sh;
+installMode=true
 
-# copy alias to home folder
+installedAlias=()
+dontInstalledAlias=()
+
 # add alias to git config
 function aliasInstall(){
-  # create aliases folder
-  local homeAliasesFolder="$HOME/$aliasesFolder"
-  if [ ! -d $homeAliasesFolder ]
-  then
-    mkdir $homeAliasesFolder;
-  fi
+  local gitExistsAliases=$(git config -l | grep -Pe "^alias\.")
+  for alias in $gitExistsAliases
+  do
+    if [ -n "`echo $alias | grep -Poe "\.$curAliasName="`" ]
+    then
+      printC "Can't install alias '$curAliasName', because it already exists in git global config:" red
+      echo $alias
+      while true; do
+        read -p "Replace it? y/n " yn
+        case $yn in
+          ""|[yY]* )
+            break;;
 
-  local homeAlias="$homeAliasesFolder/$name.sh"
-  local alias="$aliasesFolder/$name.sh"
+          [nN]* )
+            dontInstalledAlias+=($curAliasName)
+            return;;
 
-  if [ ! -e $homeAlias ]
-  then
-    cp $alias $homeAlias
-    chmod u+x $homeAlias
-    git config --global alias.$name "!$homeAlias"
-  fi
+          * ) echo "Please write answer.";;
+        esac
+      done
+      break
+    fi
+  done
+
+  copyAlias
+  git config --global alias.$curAliasName "!$curHomeAliasPath"
+  installedAlias+=($curAliasName)
 }
 
 # check to exists files and folders
@@ -30,18 +44,102 @@ function checkExists(){
   echo $path;
 }
 
+curAliasName=""
+curAliasPath=""
+curHomeAliasPath=""
+function setAliasesPath(){
+  curAliasName=$1
+  curAliasPath="$aliasesFolder/$curAliasName.sh"
+  curHomeAliasPath="$homeAliasesFolder/$curAliasName.sh"
+}
+
+# create home aliases folder
+# copy alias to home folder
+function copyAlias(){
+  # create aliases folder
+  if [ ! -d $homeAliasesFolder ]
+  then
+    mkdir $homeAliasesFolder;
+  fi
+  cp $curAliasPath $curHomeAliasPath
+  chmod u+x $curHomeAliasPath
+}
+
+# modules for aliases work
+modules=("_config" "_clean" "_printColor")
+# aliases, which don't need ask user to install
+silentAliases=("pull")
+
+# arguments:
+# 1) array of modules (modules, silentAliases)
+# 2) current file name
+# check that array of modules contains current file name
+function findModule(){
+  local arguments=($@);
+  local last_idx=$((${#arguments[@]} - 1))
+  local moduleName=${arguments[$last_idx]}
+  unset arguments[$last_idx]
+
+  for item in "${arguments[@]}"
+  do
+    if [ "$item" == "$moduleName" ]
+    then
+      return 0
+    fi
+  done
+  return 1
+}
+
 for file in $aliasesFolder/*
 do
-    source $file;
-    echo $name;
-    echo $description;
+  source $file;
+  fileName=$(basename "$file")
+  fileName="${fileName%.*}"
+  setAliasesPath "$fileName"
 
-    while true; do
-      read -p "Install it? " yn
-      case $yn in
-        [yY]* ) aliasInstall; wait $pid; break;;
-        [nN]* ) break;;
-        * ) echo "Please write answer.";;
-      esac
-    done
+  if findModule "${modules[@]}" "$fileName"
+  then
+    copyAlias
+    continue
+  fi
+
+  if findModule "${silentAliases[@]}" "$fileName"
+  then
+    aliasInstall
+    continue
+  fi
+
+
+  printC $name
+  echo $description
+
+  while true; do
+    read -p "Install it? y/n " yn
+    case $yn in
+      ""|[yY]* )
+        aliasInstall
+        wait $pid
+        break;;
+
+      [nN]* ) break;;
+
+      * ) echo "Please write answer.";;
+    esac
+  done
+  echo ""
 done
+
+echo ""
+echo "================"
+if [ ${#installedAlias[@]} -ne 0 ]
+then
+  printC "Installed aliases:"
+  printf '%s\n' "${installedAlias[@]}"
+fi
+
+echo ""
+if [ ${#dontInstalledAlias[@]} -ne 0 ]
+then
+  printC "Don't installed aliases:" red
+  printf '%s\n' "${dontInstalledAlias[@]}"
+fi

@@ -3,14 +3,27 @@
 name="co"
 description="co description"
 
-if [ "$1" == "-h" ]
+function main(){
+  echo "co"
+}
+
+for i in $@
+do
+  if [ "$i" == "-h" ]
+  then
+    helpMode=true;
+  fi;
+done
+
+if [ -n "$helpMode" ]
 then
+  echo $name
   echo $description
 else
 
-  if [ -z "$installEnvironment" ]
+  if [ -z "$installMode" ]
   then
-    echo "co"
+    main $@
   fi
 
 fi
