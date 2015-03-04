@@ -2,9 +2,7 @@
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/_printColor.sh
-
-name="st"
-description="Git status"
+source $DIR/_help.sh;
 
 function main(){
   git status
@@ -20,8 +18,8 @@ done
 
 if [ -n "$helpMode" ]
 then
-  printC $name
-  echo $description
+  filename=`basename $0`
+  helpAliases "${filename%.*}"
   printC $DIR/$name.sh gray
 else
 

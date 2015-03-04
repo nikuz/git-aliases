@@ -3,9 +3,7 @@
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/_config.sh
 source $DIR/_printColor.sh
-
-name="aliases"
-description="aliases description"
+source $DIR/_help.sh;
 
 function main(){
   for file in $homeAliasesFolder/*
@@ -14,7 +12,7 @@ function main(){
     fileName="${fileName%.*}"
     if [ -z "`echo $fileName | grep -Poe "^_"`" ]
     then
-      bash /$file -h
+      helpAliases "$fileName"
       echo ""
     fi
   done
@@ -30,8 +28,8 @@ done
 
 if [ -n "$helpMode" ]
 then
-  printC $name
-  echo $description
+  filename=`basename $0`
+  helpAliases "${filename%.*}"
   printC $DIR/$name.sh gray
 else
 

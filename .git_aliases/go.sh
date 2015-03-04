@@ -2,9 +2,7 @@
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/_printColor.sh
-
-name="go"
-description="Git checkout"
+source $DIR/_help.sh;
 
 function main(){
   if [ -n "`git branch | grep -Poe "$1"`" ]
@@ -25,8 +23,8 @@ done
 
 if [ -n "$helpMode" ]
 then
-  printC $name
-  echo $description
+  filename=`basename $0`
+  helpAliases "${filename%.*}"
   printC $DIR/$name.sh gray
 else
 

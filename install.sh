@@ -2,6 +2,7 @@
 
 source .git_aliases/_config.sh;
 source .git_aliases/_printColor.sh;
+source .git_aliases/_help.sh;
 installMode=true
 
 installedAlias=()
@@ -53,14 +54,8 @@ function setAliasesPath(){
   curHomeAliasPath="$homeAliasesFolder/$curAliasName.sh"
 }
 
-# create home aliases folder
 # copy alias to home folder
 function copyAlias(){
-  # create aliases folder
-  if [ ! -d $homeAliasesFolder ]
-  then
-    mkdir $homeAliasesFolder;
-  fi
   cp $curAliasPath $curHomeAliasPath
   chmod u+x $curHomeAliasPath
 }
@@ -85,9 +80,16 @@ function findModule(){
   return 1
 }
 
+# create aliases folder
+if [ ! -d $homeAliasesFolder ]
+then
+  mkdir $homeAliasesFolder;
+fi
+
+helpCopy
+
 for file in $aliasesFolder/*
 do
-  source $file;
   fileName=$(basename "$file")
   fileName="${fileName%.*}"
   setAliasesPath "$fileName"
@@ -103,10 +105,7 @@ do
     aliasInstall
     continue
   fi
-
-
-  printC $name
-  echo $description
+  helpAliases "$fileName"
 
   while true; do
     read -p "Install it? y/n " yn
