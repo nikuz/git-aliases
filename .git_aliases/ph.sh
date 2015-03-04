@@ -14,24 +14,7 @@ function main(){
   fi;
 }
 
-for i in $@
-do
-  if [ "$i" == "-h" ]
-  then
-    helpMode=true;
-  fi;
-done
-
-if [ -n "$helpMode" ]
+if ! helpMode $@ `basename $0`
 then
-  filename=`basename $0`
-  helpAliases "${filename%.*}"
-  printC $DIR/$name.sh gray
-else
-
-  if [ -z "$installMode" ]
-  then
-    main $@
-  fi
-
+  main $@
 fi

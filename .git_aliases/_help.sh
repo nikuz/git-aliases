@@ -6,7 +6,7 @@ source $DIR/_printColor.sh
 
 # arguments:
 # 1) alias name
-helpAliases(){
+function helpAliases(){
   local aliasName=$1
   local helpFile=$homeAliasesFolder/$readme
   local title=$(cat $helpFile | grep -iPoe "^$aliasName$")
@@ -38,7 +38,24 @@ helpAliases(){
   done
 }
 
-helpCopy(){
+function helpCopy(){
   cp $DIR/../$readme $homeAliasesFolder/$readme
 }
 
+function helpMode(){
+  local arguments=($@);
+  local helpMode=1
+
+  for i in $arguments
+  do
+    if [ "$i" == "-h" ]
+    then
+      helpMode=0
+      local last_idx=$((${#arguments[@]} - 1))
+      local aliasName=${arguments[$last_idx]}
+      helpAliases "${aliasName%.*}"
+      printC $DIR/$aliasName gray
+    fi;
+  done
+  return $helpMode
+}
