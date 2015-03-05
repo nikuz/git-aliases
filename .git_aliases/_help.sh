@@ -9,7 +9,6 @@ source $DIR/_printColor.sh
 function helpAliases(){
   local aliasName=$1
   local helpFile=$homeAliasesFolder/$readme
-  local title=$(cat $helpFile | grep -iPoe "^$aliasName$")
   local isStarted
   local matchedLines=0
 

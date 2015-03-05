@@ -55,3 +55,8 @@ St
 --
 
 Git status
+- - -
+I
+--
+
+Git branch
