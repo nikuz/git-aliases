@@ -68,3 +68,9 @@ Rmc
 --
 
 rm -rf conflicted files
+- - -
+Rmb
+--
+
+rmb [branches]<br>
+Delete defined branches, or all branches exclude master and current branch.
