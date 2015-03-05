@@ -36,7 +36,8 @@ Git checkout
 List
 ----
 
-list description
+list [ revision_hash ]
+Print list of files from last commit or from defined commit.
 
 - - -
 Ph
