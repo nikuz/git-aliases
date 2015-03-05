@@ -27,7 +27,7 @@ function helpAliases(){
 
     if [ $isStarted ] && [ $matchedLines -gt 1 ] && [ -n "`echo $line`" ]
     then
-      echo $line
+      echo $line | sed -e "s/<br>//g"
     fi
 
     if [ $isStarted ]

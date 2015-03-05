@@ -9,7 +9,7 @@ aliases description
 Br
 --
 
-ci branchName_issueNumber
+ci branchName_issueNumber<br>
 Will create new branch from actual master and goes into new branch.
 issueNumber is required. Will ask if not defined.
 
@@ -17,10 +17,10 @@ issueNumber is required. Will ask if not defined.
 Ci
 --
 
-ci description
-multiline 1
+ci description<br>
+multiline 1<br>
 
-multiline 2
+multiline 2<br>
 
 - - -
 Co
@@ -38,7 +38,7 @@ Git checkout
 List
 ----
 
-list [ revision_hash ]
+list [ revision_hash ]<br>
 Print list of files from last commit or from defined commit.
 
 - - -
