@@ -63,3 +63,8 @@ I
 --
 
 Git branch
+- - -
+Rmc
+--
+
+rm -rf conflicted files
