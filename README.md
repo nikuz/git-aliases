@@ -74,3 +74,8 @@ Rmb
 
 rmb [branches]<br>
 Delete defined branches, or all branches exclude master and current branch.
+- - -
+Inmaster
+--
+
+Merge current branch with master and push master to origin.
