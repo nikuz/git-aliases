@@ -9,7 +9,9 @@ aliases description
 Br
 --
 
-Git branch
+ci branchName_issueNumber
+Will create new branch from actual master and goes into new branch.
+issueNumber is required. Will ask if not defined.
 
 - - -
 Ci
