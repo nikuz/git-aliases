@@ -2,15 +2,14 @@
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/_printColor.sh
-source $DIR/_help.sh;
+source $DIR/_help.sh
 
 function main(){
-  local branch=$(git rev-parse --abbrev-ref HEAD)
-  if [ -z "$1" ]
+  if [ -n "$1" ]
   then
-    git pull origin $branch
-  else
     git pull origin $1:$1
+  else
+    git pull origin $(git rev-parse --abbrev-ref HEAD)
   fi;
 }
 
