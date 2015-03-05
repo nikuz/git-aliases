@@ -2,15 +2,20 @@
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/_printColor.sh
-source $DIR/_help.sh;
+source $DIR/_help.sh
 
 function main(){
-  local branch=$(git rev-parse --abbrev-ref HEAD)
-  if [ -z "$1" ]
+  if [ -n "$1" ]
   then
-    git push origin $branch:$branch
+    if [ -n "`git branch | grep -Poe "$1"`" ]
+    then
+      git push origin $1:$1
+    else
+      printC "'$1' branch doesn't exist" red;
+    fi
   else
-    git push origin $1:$1
+    local branch=$(git rev-parse --abbrev-ref HEAD)
+    git push origin $branch:$branch
   fi;
 }
 
