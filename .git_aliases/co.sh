@@ -7,7 +7,7 @@ source $DIR/_help.sh;
 function main(){
   local branch=$(git rev-parse --abbrev-ref HEAD)
   printC "Current branch is $branch"
-  git pull remote $branch:$branch
+  git pull origin $branch:$branch
   wait $pid
   printC "============================================"
   git status
