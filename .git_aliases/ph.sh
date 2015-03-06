@@ -5,6 +5,12 @@ source $DIR/_printColor.sh
 source $DIR/_help.sh
 
 function main(){
+  if ! bash _beforePush.sh
+  then
+    return
+  fi
+  echo "success before push"
+
   if [ -n "$1" ]
   then
     if [ -n "`git branch | grep -Poe "$1"`" ]

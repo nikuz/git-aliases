@@ -39,12 +39,6 @@ function aliasInstall(){
   installedAlias+=($curAliasName)
 }
 
-# check to exists files and folders
-function checkExists(){
-  local path=$1;
-  echo $path;
-}
-
 curAliasName=""
 curAliasPath=""
 curHomeAliasPath=""
@@ -105,6 +99,13 @@ do
     aliasInstall
     continue
   fi
+
+  if findModule "${beforePushModules[@]}" "$fileName"
+  then
+    copyAlias
+    continue
+  fi
+
   helpAliases "$fileName"
 
   while true; do
