@@ -5,7 +5,7 @@ source $DIR/_printColor.sh
 source $DIR/_help.sh;
 
 function main() {
-  if bash _clean.sh
+  if bash $DIR/_clean.sh
   then
     git fetch origin $1:$1
     git checkout $1

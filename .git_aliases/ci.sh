@@ -11,7 +11,7 @@ function main(){
   fi
 
   local branch=$(git rev-parse --abbrev-ref HEAD)
-  if [ "`bash _clean.sh`" ]
+  if ! bash $DIR/_clean.sh
   then
     git add .
     local isueNum=$(echo $branch | grep -Poe "[0-9]+$")

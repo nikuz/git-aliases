@@ -94,12 +94,6 @@ do
     continue
   fi
 
-  if findModule "${silentAliases[@]}" "$fileName"
-  then
-    aliasInstall
-    continue
-  fi
-
   if findModule "${beforePushModules[@]}" "$fileName"
   then
     copyAlias

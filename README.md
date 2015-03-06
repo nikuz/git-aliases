@@ -80,17 +80,20 @@ Inmaster
 
 Merge current branch with master and push master to origin.
 - - -
-Fetch [branchName]
+Fetch
 --
 
+fetch [branchName]
 Git fetch remote branch to local repository and checkout to new branch
 - - -
-Clear [files]
+Clear
 --
 
+clear [files]
 Clear unstaged changes
 - - -
-Stash [command]
+Stash
 --
 
+stash [command]
 Git stash

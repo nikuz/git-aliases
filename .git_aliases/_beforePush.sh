@@ -14,7 +14,7 @@ do
   then
     request=$(bash $file)
     response=$(echo $request | grep -Poe "\d$")
-    if [ $response -eq 1 ]
+    if [ "$response" == "1" ]
     then
       printM "$request"
       break;

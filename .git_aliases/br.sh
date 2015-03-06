@@ -11,7 +11,7 @@ function main(){
     return
   fi
 
-  if [ -n "`bash _clean.sh`" ]
+  if ! $DIR/_clean.sh
   then
     printC "Please commit or stash your current branch changes" cyan
     git status
@@ -24,7 +24,7 @@ function main(){
     git checkout master
     git co
     wait ${pid}
-    if [ -n "`bash _clean.sh`" ]
+    if ! bash $DIR/_clean.sh
     then
       git status
       return
