@@ -19,7 +19,7 @@ function main(){
   fi
 
   local branch=$(git rev-parse --abbrev-ref HEAD)
-  if [ "$branch" -ne "master" ]
+  if [ "$branch" != "master" ]
   then
     git checkout master
     git co
