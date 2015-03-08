@@ -9,7 +9,7 @@ function main(){
   then
     return
   fi
-  echo "success before push"
+  printC "Success passed all checking 'before push'" cyan
 
   if [ -n "$1" ]
   then

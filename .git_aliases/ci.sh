@@ -9,6 +9,7 @@ function main(){
   then
     return
   fi
+  printC "Success passed all checking 'before push'" cyan
 
   local branch=$(git rev-parse --abbrev-ref HEAD)
   if ! bash $DIR/_clean.sh
