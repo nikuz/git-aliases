@@ -3,7 +3,15 @@
 source .git_aliases/_config.sh;
 source .git_aliases/_printColor.sh;
 source .git_aliases/_help.sh;
-installMode=true
+source .git_aliases/_question.sh;
+
+CONFIG_FILE=$HOME/.bash_profile
+source $CONFIG_FILE
+
+test -w $CONFIG_FILE &&
+  cp $CONFIG_FILE $CONFIG_FILE.bak &&
+  echo "Your original $CONFIG_FILE has been backed up to $CONFIG_FILE.bak" &&
+  echo
 
 installedAlias=()
 dontInstalledAlias=()
@@ -15,21 +23,15 @@ function aliasInstall(){
   do
     if [ -n "`echo $alias | grep -Poe "\.$curAliasName="`" ]
     then
-      printC "Can't install alias '$curAliasName', because it already exists in git global config:" red
+      printC "\"$curAliasName\" already exists in git global config:" red
       echo $alias
-      while true; do
-        read -p "Replace it? y/n " yn
-        case $yn in
-          ""|[yY]* )
-            break;;
 
-          [nN]* )
-            dontInstalledAlias+=($curAliasName)
-            return;;
+      if ! question "Replace it?"
+      then
+        dontInstalledAlias+=($curAliasName)
+        return
+      fi
 
-          * ) echo "Please write answer.";;
-        esac
-      done
       break
     fi
   done
@@ -37,6 +39,15 @@ function aliasInstall(){
   copyAlias
   git config --global alias.$curAliasName "!$curHomeAliasPath"
   installedAlias+=($curAliasName)
+
+  local bpExistsAliases=$(alias)
+  while IFS=';' read -ra alias; do
+    if [ -z "`echo $alias | grep -Poe "g$1="`" ]
+    then
+      echo "alias g$1='git $1'" >> $CONFIG_FILE
+      break
+    fi
+  done <<< "$bpExistsAliases"
 }
 
 curAliasName=""
@@ -102,21 +113,13 @@ do
 
   helpAliases "$fileName"
 
-  while true; do
-    read -p "Install it? y/n " yn
-    case $yn in
-      ""|[yY]* )
-        aliasInstall
-        wait $pid
-        break;;
+  if question "Install it?"
+  then
+    aliasInstall $fileName
+  else
+    dontInstalledAlias+=($curAliasName)
+  fi
 
-      [nN]* )
-        dontInstalledAlias+=($curAliasName)
-        break;;
-
-      * ) echo "Please write answer.";;
-    esac
-  done
   echo
 done
 
@@ -134,3 +137,9 @@ then
   printC "Don't installed aliases:" red
   printf '%s\n' "${dontInstalledAlias[@]}"
 fi
+
+echo
+echo "Execute command:"
+printC ". $CONFIG_FILE" cyan
+echo "For update aliases"
+echo
