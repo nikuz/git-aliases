@@ -5,6 +5,12 @@ source .git_aliases/_printColor.sh;
 source .git_aliases/_help.sh;
 source .git_aliases/_question.sh;
 
+if [ "$1" == "--list" ]
+then
+  .git_aliases/aliases.sh
+  exit 0
+fi
+
 CONFIG_FILE=$HOME/.bash_profile
 source $CONFIG_FILE
 
