@@ -22,13 +22,13 @@ function main(){
   if [ "$branch" != "master" ]
   then
     git checkout master
-    git co
-    wait ${pid}
-    if ! bash $DIR/_clean.sh
-    then
-      git status
-      return
-    fi
+  fi
+
+  git pull origin $branch:$branch
+  if ! $DIR/_clean.sh
+  then
+    git status
+    return
   fi
 
   if [ -n "`echo \"$1\" | grep -Poe \"[0-9]+$\"`" ]
