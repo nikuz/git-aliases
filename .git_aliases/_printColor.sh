@@ -16,7 +16,7 @@ printC(){
   if [ -n "$2" ]
   then
     colorIndex=$2
-  fi;
+  fi
   local color=${colors[$colorIndex]}
   local NC=${colors["nc"]}
 

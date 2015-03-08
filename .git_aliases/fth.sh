@@ -2,7 +2,7 @@
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/_printColor.sh
-source $DIR/_help.sh;
+source $DIR/_help.sh
 
 function main() {
   if bash $DIR/_clean.sh

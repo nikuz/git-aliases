@@ -17,7 +17,7 @@ do
     if [ "$response" == "1" ]
     then
       printM "$request"
-      break;
+      break
     fi
   fi
 done

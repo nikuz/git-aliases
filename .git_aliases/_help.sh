@@ -42,7 +42,7 @@ function helpCopy(){
 }
 
 function helpMode(){
-  local arguments=($@);
+  local arguments=($@)
   local helpMode=1
 
   for i in $arguments
@@ -54,7 +54,7 @@ function helpMode(){
       local aliasName=${arguments[$last_idx]}
       helpAliases "${aliasName%.*}"
       printC $DIR/$aliasName gray
-    fi;
+    fi
   done
   return $helpMode
 }

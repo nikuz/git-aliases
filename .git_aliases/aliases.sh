@@ -3,7 +3,7 @@
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/_config.sh
 source $DIR/_printColor.sh
-source $DIR/_help.sh;
+source $DIR/_help.sh
 
 function main(){
   for file in $homeAliasesFolder/*

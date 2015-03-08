@@ -10,7 +10,7 @@ function main(){
     git pull origin $1:$1
   else
     git pull origin $(git rev-parse --abbrev-ref HEAD)
-  fi;
+  fi
 }
 
 if ! helpMode $@ `basename $0`

@@ -17,12 +17,12 @@ function main(){
     then
       git push origin $1:$1
     else
-      printC "'$1' branch doesn't exist" red;
+      printC "'$1' branch doesn't exist" red
     fi
   else
     local branch=$(git rev-parse --abbrev-ref HEAD)
     git push origin $branch:$branch
-  fi;
+  fi
 }
 
 if ! helpMode $@ `basename $0`
