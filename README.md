@@ -57,6 +57,7 @@ Git pull alias
 St
 --
 
+st [<options>...] [--] [<pathspec>...]
 Git status
 - - -
 I
@@ -97,3 +98,9 @@ Sth
 
 sth [command]
 Git stash
+- - -
+Df
+--
+
+df [<options>...] [--] [<pathspec>...]
+Git diff
