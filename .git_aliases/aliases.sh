@@ -9,7 +9,7 @@ function main(){
   for file in $homeAliasesFolder/*
   do
     local fileName=$(basename "$file")
-    if [ -z "`echo $fileName | grep -Poe "^_"`" ]
+    if [ -z "`echo $fileName | grep -Poe "^(_|README)"`" ]
     then
       helpMode -h "$fileName"
       echo ""
