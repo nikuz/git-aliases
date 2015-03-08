@@ -93,11 +93,20 @@ fi
 
 helpCopy
 
+namedAliases=$@
 for file in $aliasesFolder/*
 do
   fileName=$(basename "$file")
   fileName="${fileName%.*}"
   setAliasesPath "$fileName"
+
+  if findModule "${namedAliases[@]}" "$fileName"
+  then
+    echo $fileName
+  elif [ ${#namedAliases[@]} -gt 0 ] && [ "${namedAliases[0]}" != "" ]
+  then
+    continue
+  fi
 
   if findModule "${modules[@]}" "$fileName"
   then
