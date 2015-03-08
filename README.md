@@ -92,8 +92,8 @@ Clear
 clear [files]
 Clear unstaged changes
 - - -
-Stash
+Sth
 --
 
-stash [command]
+sth [command]
 Git stash
