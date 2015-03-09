@@ -47,13 +47,19 @@ function aliasInstall(){
   installedAlias+=($curAliasName)
 
   local bpExistsAliases=$(alias)
+  local bpAliasMatch
   while IFS=';' read -ra alias; do
-    if [ -z "`echo $alias | grep -Poe "g$1="`" ]
+    if [ -n "`echo $alias | grep -Poe "g$1="`" ]
     then
-      echo "alias g$1='git $1'" >> $CONFIG_FILE
+      bpAliasMatch=true
       break
     fi
   done <<< "$bpExistsAliases"
+
+  if [ -z "$bpAliasMatch" ]
+  then
+    echo "alias g$1='git $1'" >> $CONFIG_FILE
+  fi
 }
 
 curAliasName=""

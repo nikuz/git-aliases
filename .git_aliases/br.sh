@@ -24,7 +24,7 @@ function main(){
     git checkout master
   fi
 
-  git pull origin $branch:$branch
+  git pull origin master
   if ! $DIR/_clean.sh
   then
     git status
