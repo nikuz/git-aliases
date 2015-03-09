@@ -5,7 +5,7 @@ source $DIR/_printColor.sh
 source $DIR/_help.sh;
 
 function main(){
-  git status $@
+  git diff $@
 }
 
 if ! helpMode $@ `basename $0`
