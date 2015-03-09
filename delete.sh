@@ -16,6 +16,15 @@ then
   exit 0
 fi
 
+if [[ "$1" == "-q" || "$2" == "-q" ]]
+then
+  quietMode="True"
+fi
+if [[ "$1" == "-all" || "$2" == "-all" ]]
+then
+  all="True"
+fi
+
 CONFIG_FILE=$HOME/.bash_profile
 source $CONFIG_FILE
 
@@ -25,6 +34,7 @@ test -w $CONFIG_FILE &&
   echo
 
 deletedAlias=()
+deletedModules=()
 dontDeletedAlias=()
 
 # add alias to git config
@@ -33,28 +43,34 @@ function aliasDelete(){
   local curAliasName=$(basename "$file")
   curAliasName="${fileName%.*}"
 
-  local gitExistsAliases=$(git config -l | grep -Pe "^alias\.")
-  for alias in $gitExistsAliases
-  do
-    if [ -n "`echo $alias | grep -Poe "\.$curAliasName="`" ]
-    then
-      git config --global --unset alias.$curAliasName
-      break
-    fi
-  done
+  if ! findModule "${modules[@]}" "$curAliasName" &&
+     ! findModule "${beforePushModules[@]}" "$curAliasName"
+  then
+    local gitExistsAliases=$(git config -l | grep -Pe "^alias\.")
+    for alias in $gitExistsAliases
+    do
+      if [ -n "`echo $alias | grep -Poe "\.$curAliasName="`" ]
+      then
+        git config --global --unset alias.$curAliasName
+        break
+      fi
+    done
 
-  local bpExistsAliases=$(alias)
-  while IFS=';' read -ra alias; do
-    if [ -n "`echo $alias | grep -Poe "g$curAliasName="`" ]
-    then
-      sed -i "s/$alias//g" $CONFIG_FILE
-      break
-    fi
-  done <<< "$bpExistsAliases"
+    local bpExistsAliases=$(alias)
+    while IFS=';' read -ra alias; do
+      if [ -n "`echo $alias | grep -Poe "g$curAliasName="`" ]
+      then
+        sed -i "s/$alias//g" $CONFIG_FILE
+        break
+      fi
+    done <<< "$bpExistsAliases"
 
-  rm $file
-
-  deletedAlias+=($curAliasName)
+    rm $file
+    deletedAlias+=($curAliasName)
+  else
+    rm $file
+    deletedModules+=($curAliasName)
+  fi
 }
 
 # arguments:
@@ -83,31 +99,33 @@ do
   fileName=$(basename "$file")
   fileName="${fileName%.*}"
 
-  # if file is service module or README -> continue
-  if findModule "${modules[@]}" "$fileName" ||
-     findModule "${beforePushModules[@]}" "$fileName" ||
-     [ -n "`echo $fileName | grep -Poe "^README"`" ]
+  # if README then continue
+  if [ -n "`echo $fileName | grep -Poe "^README"`" ]
   then
     continue
   fi
 
-  if [ "$namedAliases" != "--all" ] && ! findModule "${namedAliases[@]}" "$fileName"
+  if [ -z $all ] && ! findModule "${namedAliases[@]}" "$fileName"
   then
     continue
   fi
 
-  helpAliases "$fileName"
-  if question "Delete it?"
+  if [ -z $quietMode ]
   then
-    aliasDelete $file
+    helpAliases "$fileName"
+    if question "Delete it?"
+    then
+      aliasDelete $file
+    else
+      dontDeletedAlias+=($fileName)
+    fi
+    echo
   else
-    dontDeletedAlias+=($fileName)
+    aliasDelete $file
   fi
-
-  echo
 done
 
-if [ "$namedAliases" == "--all" ] && [ ${#dontDeletedAlias[@]} -eq 0 ]
+if [[ -n $all && ${#dontDeletedAlias[@]} -eq 0 ]]
 then
   rm -rf $homeAliasesFolder
 fi
@@ -118,12 +136,19 @@ if [ ${#deletedAlias[@]} -ne 0 ]
 then
   printC "Deleted aliases:"
   printf '%s\n' "${deletedAlias[@]}"
+  echo
 fi
 
-echo
+if [ ${#deletedModules[@]} -ne 0 ]
+then
+  printC "Deleted modules:"
+  printf '%s\n' "${deletedModules[@]}"
+  echo
+fi
+
 if [ ${#dontDeletedAlias[@]} -ne 0 ]
 then
   printC "Don't deleted aliases:" red
   printf '%s\n' "${dontDeletedAlias[@]}"
+  echo
 fi
-echo
