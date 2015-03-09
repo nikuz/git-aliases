@@ -5,6 +5,12 @@ source .git_aliases/_printColor.sh;
 source .git_aliases/_help.sh;
 source .git_aliases/_question.sh;
 
+if [ "$1" == "--list" ]
+then
+  .git_aliases/aliases.sh
+  exit 0
+fi
+
 CONFIG_FILE=$HOME/.bash_profile
 source $CONFIG_FILE
 
@@ -93,11 +99,20 @@ fi
 
 helpCopy
 
+namedAliases=$@
 for file in $aliasesFolder/*
 do
   fileName=$(basename "$file")
   fileName="${fileName%.*}"
   setAliasesPath "$fileName"
+
+  if findModule "${namedAliases[@]}" "$fileName"
+  then
+    echo $fileName
+  elif [ ${#namedAliases[@]} -gt 0 ] && [ "${namedAliases[0]}" != "" ]
+  then
+    continue
+  fi
 
   if findModule "${modules[@]}" "$fileName"
   then
