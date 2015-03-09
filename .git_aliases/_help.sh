@@ -20,13 +20,13 @@ function helpAliases(){
 
   cat $helpFile | while read line
   do
-    if [ "`echo $line | grep -iPoe "^$aliasName$"`" ]
+    if [ "`echo $line | grep -iPoe "^### $aliasName$"`" ]
     then
-      printC $line
+      printC $(echo $line | sed "s/\#//g")
       isStarted=true
     fi
 
-    if [ $isStarted ] && [ "`echo $line | grep -iPoe "^- - -$"`" ]
+    if [ $isStarted ] && [ $matchedLines -gt 1 ] && [ "`echo $line | grep -iPoe "^###"`" ]
     then
       break
     fi
