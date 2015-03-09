@@ -117,3 +117,9 @@ Delete
 ./delete.sh (aliasName | --all) <br>
 Delete aliases by name. Can take many aliases by one time.<br>
 For delete all aliases. Need request --all
+- - -
+L
+--
+
+gl<br>
+git log --graph
