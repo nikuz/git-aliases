@@ -18,26 +18,26 @@ function main(){
     return
   fi
 
-  local branch=$(git rev-parse --abbrev-ref HEAD)
-  if [ "$branch" != "master" ]
+  if [ -z "`echo \"$1\" | grep -Poe \"[0-9]+$\"`" ]
   then
-    git checkout master
-  fi
+    getIssueNumber $1
+  else
+    local branch=$(git rev-parse --abbrev-ref HEAD)
+    if [ "$branch" != "master" ]
+    then
+      git checkout master
+    fi
 
-  git pull origin master
-  if ! $DIR/_clean.sh
-  then
-    git status
-    return
-  fi
+    git pull origin master
+    if ! $DIR/_clean.sh
+    then
+      git status
+      return
+    fi
 
-  if [ -n "`echo \"$1\" | grep -Poe \"[0-9]+$\"`" ]
-  then
     git branch $1
     git checkout $1
     git branch
-  else
-    getIssueNumber $1
   fi
 }
 
