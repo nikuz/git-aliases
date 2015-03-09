@@ -104,3 +104,9 @@ Df
 
 df [<options>...] [--] [<pathspec>...]
 Git diff
+- - -
+Rs
+--
+
+git reset --soft HEAD^<br>
+Git reset last commit
