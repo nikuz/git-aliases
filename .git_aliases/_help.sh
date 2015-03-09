@@ -8,7 +8,13 @@ source $DIR/_printColor.sh
 # 1) alias name
 function helpAliases(){
   local aliasName=$1
-  local helpFile=$homeAliasesFolder/$readme
+  local helpFile
+  if [ -d $homeAliasesFolder ]
+  then
+    helpFile="$homeAliasesFolder/$readme"
+  else
+    helpFile="$PWD/$readme"
+  fi
   local isStarted
   local matchedLines=0
 

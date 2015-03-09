@@ -5,10 +5,15 @@ source .git_aliases/_printColor.sh
 source .git_aliases/_help.sh
 source .git_aliases/_question.sh
 
-if [ "$1" == "--list" ]
+if [ "$1" == "-list" ]
 then
   .git_aliases/aliases.sh
   exit 0
+fi
+
+if [ "$1" == "-q" ]
+then
+  quietMode="True"
 fi
 
 CONFIG_FILE=$HOME/.bash_profile
@@ -20,6 +25,7 @@ test -w $CONFIG_FILE &&
   echo
 
 installedAlias=()
+installedModules=()
 dontInstalledAlias=()
 
 # add alias to git config
@@ -105,7 +111,13 @@ fi
 
 helpCopy
 
-namedAliases=$@
+namedAliases=($@)
+if [ -z $quietMode ]
+then
+  namedIndex=0
+else
+  namedIndex=1
+fi
 for file in $aliasesFolder/*
 do
   fileName=$(basename "$file")
@@ -114,25 +126,34 @@ do
 
   if findModule "${modules[@]}" "$fileName" || findModule "${beforePushModules[@]}" "$fileName"
   then
-    copyAlias $file
+    if [ ! -e $curHomeAliasPath ]
+    then
+      copyAlias $file
+      installedModules+=($fileName)
+    fi
     continue
   fi
 
-  if [ ${#namedAliases[@]} -gt 0 ] && [ "${namedAliases[0]}" != "" ] && ! findModule "${namedAliases[@]}" "$fileName"
+  if [ ${#namedAliases[@]} -gt $namedIndex ] && [ "${namedAliases[0]}" != "" ] && ! findModule "${namedAliases[@]}" "$fileName"
   then
     continue
   fi
 
   if [ ! -e $curHomeAliasPath ]
   then
-    helpAliases "$fileName"
-    if question "Install it?"
+    if [ -z $quietMode ]
     then
-      aliasInstall $file
+      helpAliases "$fileName"
+      if question "Install it?"
+      then
+        aliasInstall $file
+      else
+        dontInstalledAlias+=($fileName)
+      fi
+      echo
     else
-      dontInstalledAlias+=($fileName)
+      aliasInstall $file
     fi
-    echo
   fi
 done
 
@@ -142,13 +163,21 @@ if [ ${#installedAlias[@]} -ne 0 ]
 then
   printC "Installed aliases:"
   printf '%s\n' "${installedAlias[@]}"
+  echo
 fi
 
-echo
+if [ ${#installedModules[@]} -ne 0 ]
+then
+  printC "Installed modules:"
+  printf '%s\n' "${installedModules[@]}"
+  echo
+fi
+
 if [ ${#dontInstalledAlias[@]} -ne 0 ]
 then
   printC "Don't installed aliases:" red
   printf '%s\n' "${dontInstalledAlias[@]}"
+  echo
 fi
 
 echo
