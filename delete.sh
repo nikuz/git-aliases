@@ -60,7 +60,7 @@ function aliasDelete(){
     while IFS=';' read -ra alias; do
       if [ -n "`echo $alias | grep -Poe "g$curAliasName="`" ]
       then
-        sed -i "s/$alias//g" $CONFIG_FILE
+        sed -i "/$alias/d" $CONFIG_FILE
         break
       fi
     done <<< "$bpExistsAliases"
