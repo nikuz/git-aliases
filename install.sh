@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-source .git_aliases/_config.sh;
-source .git_aliases/_printColor.sh;
-source .git_aliases/_help.sh;
-source .git_aliases/_question.sh;
+source .git_aliases/_config.sh
+source .git_aliases/_printColor.sh
+source .git_aliases/_help.sh
+source .git_aliases/_question.sh
 
 if [ "$1" == "--list" ]
 then
@@ -24,6 +24,10 @@ dontInstalledAlias=()
 
 # add alias to git config
 function aliasInstall(){
+  local file=$1
+  local curAliasName=$(basename "$file")
+  curAliasName="${fileName%.*}"
+
   local gitExistsAliases=$(git config -l | grep -Pe "^alias\.")
   for alias in $gitExistsAliases
   do
@@ -42,14 +46,15 @@ function aliasInstall(){
     fi
   done
 
-  copyAlias
+  copyAlias $file
+  local curHomeAliasPath="$homeAliasesFolder/$curAliasName.sh"
   git config --global alias.$curAliasName "!$curHomeAliasPath"
   installedAlias+=($curAliasName)
 
   local bpExistsAliases=$(alias)
   local bpAliasMatch
   while IFS=';' read -ra alias; do
-    if [ -n "`echo $alias | grep -Poe "g$1="`" ]
+    if [ -n "`echo $alias | grep -Poe "g$curAliasName="`" ]
     then
       bpAliasMatch=true
       break
@@ -58,22 +63,17 @@ function aliasInstall(){
 
   if [ -z "$bpAliasMatch" ]
   then
-    echo "alias g$1='git $1'" >> $CONFIG_FILE
+    echo "alias g$curAliasName='git $curAliasName'" >> $CONFIG_FILE
   fi
-}
-
-curAliasName=""
-curAliasPath=""
-curHomeAliasPath=""
-function setAliasesPath(){
-  curAliasName=$1
-  curAliasPath="$aliasesFolder/$curAliasName.sh"
-  curHomeAliasPath="$homeAliasesFolder/$curAliasName.sh"
 }
 
 # copy alias to home folder
 function copyAlias(){
-  cp $curAliasPath $curHomeAliasPath
+  local file=$1
+  local curAliasName=$(basename "$file")
+  local curHomeAliasPath="$homeAliasesFolder/$curAliasName"
+
+  cp $file $curHomeAliasPath
   chmod u+x $curHomeAliasPath
 }
 
@@ -82,7 +82,7 @@ function copyAlias(){
 # 2) current file name
 # check that array of modules contains current file name
 function findModule(){
-  local arguments=($@);
+  local arguments=($@)
   local last_idx=$((${#arguments[@]} - 1))
   local moduleName=${arguments[$last_idx]}
   unset arguments[$last_idx]
@@ -97,10 +97,10 @@ function findModule(){
   return 1
 }
 
-# create aliases folder
+# create aliases folder if not exists
 if [ ! -d $homeAliasesFolder ]
 then
-  mkdir $homeAliasesFolder;
+  mkdir $homeAliasesFolder
 fi
 
 helpCopy
@@ -110,38 +110,30 @@ for file in $aliasesFolder/*
 do
   fileName=$(basename "$file")
   fileName="${fileName%.*}"
-  setAliasesPath "$fileName"
+  curHomeAliasPath="$homeAliasesFolder/$fileName.sh"
 
-  if findModule "${namedAliases[@]}" "$fileName"
+  if findModule "${modules[@]}" "$fileName" || findModule "${beforePushModules[@]}" "$fileName"
   then
-    echo $fileName
-  elif [ ${#namedAliases[@]} -gt 0 ] && [ "${namedAliases[0]}" != "" ]
+    copyAlias $file
+    continue
+  fi
+
+  if [ ${#namedAliases[@]} -gt 0 ] && [ "${namedAliases[0]}" != "" ] && ! findModule "${namedAliases[@]}" "$fileName"
   then
     continue
   fi
 
-  if findModule "${modules[@]}" "$fileName"
+  if [ ! -e $curHomeAliasPath ]
   then
-    copyAlias
-    continue
+    helpAliases "$fileName"
+    if question "Install it?"
+    then
+      aliasInstall $file
+    else
+      dontInstalledAlias+=($fileName)
+    fi
+    echo
   fi
-
-  if findModule "${beforePushModules[@]}" "$fileName"
-  then
-    copyAlias
-    continue
-  fi
-
-  helpAliases "$fileName"
-
-  if question "Install it?"
-  then
-    aliasInstall $fileName
-  else
-    dontInstalledAlias+=($curAliasName)
-  fi
-
-  echo
 done
 
 echo
