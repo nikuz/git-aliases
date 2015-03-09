@@ -148,7 +148,7 @@ usage: gpl [branch_name]<br>
 ### St
 
 git st - gst<br>
-usage: gst [<options>...] [--] [<pathspec>...]<br>
+usage: gst [options...] [--] [pathspec...]<br>
 Git status
 
 ### I
@@ -196,7 +196,7 @@ Git stash. Will run `git add .` before stash.
 ### Df
 
 git df - gdf<br>
-usage: gdf [<options>...] [--] [<pathspec>...]<br>
+usage: gdf [options...] [--] [pathspec...]<br>
 Git diff
 
 ### Rs
