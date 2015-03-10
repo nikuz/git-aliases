@@ -102,12 +102,24 @@ function findModule(){
   done
   return 1
 }
-
 # create aliases folder if not exists
 if [ ! -d $homeAliasesFolder ]
 then
   mkdir $homeAliasesFolder
 fi
+
+
+# copy modules
+for item in "${modules[@]}" "${beforePushModules[@]}"
+do
+  declare homeAlias="$homeAliasesFolder/$item.sh"
+  if [ ! -e $homeAlias ]
+  then
+    copyAlias "$aliasesFolder/$item.sh"
+    installedModules+=($item)
+  fi
+done
+
 
 helpCopy
 
@@ -123,16 +135,6 @@ do
   fileName=$(basename "$file")
   fileName="${fileName%.*}"
   curHomeAliasPath="$homeAliasesFolder/$fileName.sh"
-
-  if findModule "${modules[@]}" "$fileName" || findModule "${beforePushModules[@]}" "$fileName"
-  then
-    if [ ! -e $curHomeAliasPath ]
-    then
-      copyAlias $file
-      installedModules+=($fileName)
-    fi
-    continue
-  fi
 
   if [ ${#namedAliases[@]} -gt $namedIndex ] && [ "${namedAliases[0]}" != "" ] && ! findModule "${namedAliases[@]}" "$fileName"
   then

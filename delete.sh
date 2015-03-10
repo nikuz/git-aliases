@@ -43,34 +43,27 @@ function aliasDelete(){
   local curAliasName=$(basename "$file")
   curAliasName="${fileName%.*}"
 
-  if ! findModule "${modules[@]}" "$curAliasName" &&
-     ! findModule "${beforePushModules[@]}" "$curAliasName"
-  then
-    local gitExistsAliases=$(git config -l | grep -Pe "^alias\.")
-    for alias in $gitExistsAliases
-    do
-      if [ -n "`echo $alias | grep -Poe "\.$curAliasName="`" ]
-      then
-        git config --global --unset alias.$curAliasName
-        break
-      fi
-    done
+  local gitExistsAliases=$(git config -l | grep -Pe "^alias\.")
+  for alias in $gitExistsAliases
+  do
+    if [ -n "`echo $alias | grep -Poe "\.$curAliasName="`" ]
+    then
+      git config --global --unset alias.$curAliasName
+      break
+    fi
+  done
 
-    local bpExistsAliases=$(alias)
-    while IFS=';' read -ra alias; do
-      if [ -n "`echo $alias | grep -Poe "g$curAliasName="`" ]
-      then
-        sed -i "/$alias/d" $CONFIG_FILE
-        break
-      fi
-    done <<< "$bpExistsAliases"
+  local bpExistsAliases=$(alias)
+  while IFS=';' read -ra alias; do
+    if [ -n "`echo $alias | grep -Poe "g$curAliasName="`" ]
+    then
+      sed -i "/$alias/d" $CONFIG_FILE
+      break
+    fi
+  done <<< "$bpExistsAliases"
 
-    rm $file
-    deletedAlias+=($curAliasName)
-  else
-    rm $file
-    deletedModules+=($curAliasName)
-  fi
+  rm $file
+  deletedAlias+=($curAliasName)
 }
 
 # arguments:
@@ -107,6 +100,14 @@ do
 
   if [ -z $all ] && ! findModule "${namedAliases[@]}" "$fileName"
   then
+    continue
+  fi
+
+  if findModule "${modules[@]}" "$fileName" ||
+     findModule "${beforePushModules[@]}" "$fileName"
+  then
+    rm $file
+    deletedModules+=($fileName)
     continue
   fi
 
