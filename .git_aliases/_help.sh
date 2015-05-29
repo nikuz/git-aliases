@@ -18,20 +18,21 @@ function helpAliases(){
   local isStarted
   local matchedLines=0
 
+  shopt -s nocasematch
   cat $helpFile | while read line
   do
-    if [ "`echo $line | grep -iPoe "^### $aliasName$"`" ]
+    if [[ $line == "### $aliasName" ]]
     then
       printC $(echo $line | sed "s/\#//g")
       isStarted=true
     fi
 
-    if [ $isStarted ] && [ $matchedLines -gt 1 ] && [ "`echo $line | grep -iPoe "^###"`" ]
+    if [ $isStarted ] && [ $matchedLines -gt 1 ] && [[ $line == "###"* ]]
     then
       break
     fi
 
-    if [ $isStarted ] && [ $matchedLines -gt 1 ] && [ -n "`echo $line`" ]
+    if [ $isStarted ] && [ $matchedLines -gt 1 ] && [ -n "$line" ]
     then
       echo $line | sed -e "s/<br>//g"
     fi
