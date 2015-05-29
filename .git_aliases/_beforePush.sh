@@ -13,9 +13,9 @@ do
   if [ -n "`echo $fileName | grep -Poe "^__"`" ]
   then
     request=$(bash $file)
-    response=$(echo $request | grep -Poe "\d$")
-    if [ "$response" == "1" ]
+    if [ -n "`echo $request`" ]
     then
+      response=1
       printM "$request"
       break
     fi
