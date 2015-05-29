@@ -26,7 +26,7 @@ do
   taskExec=$(grunt $task)
   if [ -z "`echo $taskExec | grep -Poe "$success"`" ]
   then
-    printM "$taskExec"
+    echo "$taskExec"
     exit 1
   fi
 done
