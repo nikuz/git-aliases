@@ -54,15 +54,16 @@ function aliasDelete(){
   done
 
   local bpExistsAliases=$(alias)
+  local TMP_CONFIG=`mktemp $CONFIG_FILE.XXXXXXXXXX`
   while IFS=';' read -ra alias; do
     if [ -n "`echo $alias | grep -o "g$curAliasName="`" ]
     then
-      echo $alias;
-      sed -i "" "/$alias/d" $CONFIG_FILE
+      sed -e "s/$alias//g" $CONFIG_FILE > $TMP_CONFIG
       break
     fi
   done <<< "$bpExistsAliases"
 
+  mv $TMP_CONFIG $CONFIG_FILE
   rm $file
   deletedAlias+=($curAliasName)
 }
