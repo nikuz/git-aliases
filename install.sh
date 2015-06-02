@@ -34,10 +34,10 @@ function aliasInstall(){
   local curAliasName=$(basename "$file")
   curAliasName="${fileName%.*}"
 
-  local gitExistsAliases=$(git config -l | grep -Pe "^alias\.")
+  local gitExistsAliases=$(git config -l | grep -e "^alias\.")
   for alias in $gitExistsAliases
   do
-    if [ -n "`echo $alias | grep -Poe "\.$curAliasName="`" ]
+    if [ -n "`echo $alias | grep -o "\.$curAliasName="`" ]
     then
       printC "\"$curAliasName\" already exists in git global config:" red
       echo $alias
@@ -60,7 +60,7 @@ function aliasInstall(){
   local bpExistsAliases=$(alias)
   local bpAliasMatch
   while IFS=';' read -ra alias; do
-    if [ -n "`echo $alias | grep -Poe "g$curAliasName="`" ]
+    if [ -n "`echo $alias | grep -o "g$curAliasName="`" ]
     then
       bpAliasMatch=true
       break

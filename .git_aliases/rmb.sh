@@ -17,7 +17,7 @@ function main(){
       fi
     done
   else
-    git branch | grep -Pv "master|\*" | xargs git branch -D
+    git branch | grep -v "*\|master" | xargs git branch -D
   fi
 }
 

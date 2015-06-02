@@ -9,11 +9,10 @@ function main(){
   then
     return
   fi
-  printC "Success passed all checking 'before push'" cyan
 
   if [ -n "$1" ]
   then
-    if [ -n "`git branch | grep -Poe "$1"`" ]
+    if [ -n "`git branch | grep -o '^$1$'`" ]
     then
       git push origin $1:$1
     else

@@ -9,13 +9,12 @@ function main(){
   then
     return
   fi
-  printC "Success passed all checking 'before push'" cyan
 
   local branch=$(git rev-parse --abbrev-ref HEAD)
   if ! bash $DIR/_clean.sh
   then
     git add .
-    local isueNum=$(echo $branch | grep -Poe "[0-9]+$")
+    local isueNum=$(echo $branch | grep -o "[0-9]\+$")
 
     local comment=$@
     if [ -z "$1" ]

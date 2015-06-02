@@ -18,7 +18,7 @@ function main(){
     return
   fi
 
-  if [ -z "`echo \"$1\" | grep -Poe \"[0-9]+$\"`" ]
+  if [ -z "`echo $1 | grep -o "[0-9]\+$"`" ]
   then
     getIssueNumber $1
   else

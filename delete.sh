@@ -43,10 +43,10 @@ function aliasDelete(){
   local curAliasName=$(basename "$file")
   curAliasName="${fileName%.*}"
 
-  local gitExistsAliases=$(git config -l | grep -Pe "^alias\.")
+  local gitExistsAliases=$(git config -l | grep -e "^alias\.")
   for alias in $gitExistsAliases
   do
-    if [ -n "`echo $alias | grep -Poe "\.$curAliasName="`" ]
+    if [ -n "`echo $alias | grep -o "\.$curAliasName="`" ]
     then
       git config --global --unset alias.$curAliasName
       break
@@ -54,14 +54,16 @@ function aliasDelete(){
   done
 
   local bpExistsAliases=$(alias)
+  local TMP_CONFIG=`mktemp $CONFIG_FILE.XXXXXXXXXX`
   while IFS=';' read -ra alias; do
-    if [ -n "`echo $alias | grep -Poe "g$curAliasName="`" ]
+    if [ -n "`echo $alias | grep -o "g$curAliasName="`" ]
     then
-      sed -i "/$alias/d" $CONFIG_FILE
+      sed -e "s/$alias//g" $CONFIG_FILE > $TMP_CONFIG
       break
     fi
   done <<< "$bpExistsAliases"
 
+  mv $TMP_CONFIG $CONFIG_FILE
   rm $file
   deletedAlias+=($curAliasName)
 }
@@ -93,7 +95,7 @@ do
   fileName="${fileName%.*}"
 
   # if README then continue
-  if [ -n "`echo $fileName | grep -Poe "^README"`" ]
+  if [ -n "`echo $fileName | grep -o "^README"`" ]
   then
     continue
   fi

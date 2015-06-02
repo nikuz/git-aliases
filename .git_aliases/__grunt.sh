@@ -13,7 +13,7 @@ declare -a taskList=()
 declare task
 while read line
 do
-  task=$(echo $line | grep -Poe "(?<=grunt.registerTask\(')[^']+")
+  task=$(echo $line | grep -o "before_push_[^\'\"]\+")
   if [ -n "$task" ]
   then
     taskList+=($task)
@@ -24,7 +24,7 @@ declare success="Done, without errors."
 for task in "${taskList[@]}"
 do
   taskExec=$(grunt $task)
-  if [ -z "`echo $taskExec | grep -Poe "$success"`" ]
+  if [ -z "`echo $taskExec | grep -o "$success"`" ]
   then
     echo "$taskExec"
     exit 1

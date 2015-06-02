@@ -4,21 +4,27 @@
 # 1) string
 # 2) color
 printC(){
-  local -A colors=(
-    ["green"]="\E[32;40m"
-    ["cyan"]="\e[0;36m"
-    ["red"]="\e[31m"
-    ["gray"]="\e[90m"
-    ["nc"]="\e[0m" # No Color
+  local -a colors=(
+    "\E[32;40m%s\e[0m\n" # green
+    "\e[0;36m%s\e[0m\n" # cyan
+    "\e[31m%s\e[0m\n" # red
+    "\e[90m%s\e[0m\n" # gray
   )
 
-  local colorIndex="green"
-  if [ -n "$2" ]
-  then
-    colorIndex=$2
-  fi
-  local color=${colors[$colorIndex]}
-  local NC=${colors["nc"]}
-
-  echo -e "$color$1$NC"
+  local colorIndex
+  case "$2" in
+  "cyan")
+    colorIndex=1
+  ;;
+  "red")
+    colorIndex=2
+  ;;
+  "gray")
+    colorIndex=3
+  ;;
+  *)
+    colorIndex=0
+  ;;
+  esac
+  printf ${colors[$colorIndex]} "$1"
 }
