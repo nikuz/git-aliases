@@ -5,7 +5,7 @@ source $DIR/_printColor.sh
 source $DIR/_help.sh
 
 function main() {
-  if [ -n "`git status | grep -Poe "Untracked"`" ]
+  if [ -n "`git status | grep -o "Untracked"`" ]
   then
     git add .
   fi

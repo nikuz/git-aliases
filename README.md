@@ -213,6 +213,7 @@ git log --graph
 
 ### Delete
 
-./delete.sh (aliasName | -all) <br>
+./delete.sh (aliasName | -all) [-q] <br>
 Delete aliases by name. Can take many aliases by one time.<br>
-For delete all aliases. Need request --all
+For delete all aliases. Need request -all
+-q for quiet mode

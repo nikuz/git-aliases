@@ -5,7 +5,7 @@ source $DIR/_printColor.sh
 source $DIR/_help.sh
 
 function main(){
-  if [ -n "`git branch | grep -Poe "$1"`" ]
+  if [ -n "`git branch | grep -o "$1"`" ]
   then
       git checkout $1
   else

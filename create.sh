@@ -7,9 +7,8 @@ source .git_aliases/_question.sh
 
 function nameGet(){
   local result=$1
-  local pattern="^[a-zA-Z0-9]+$"
   local qName=$(questionGet "Alias name" "True")
-  if [ -n "`echo $qName | grep -Poe "$pattern"`" ]
+  if [ -n "`echo $qName | grep -o "^[a-zA-Z0-9]\+$"`" ]
   then
     eval "$result=\"$qName\""
   else

@@ -8,7 +8,7 @@ function main(){
   local commit
   if [ -z "$1" ]
   then
-    commit=`git log -n 1 | grep -Poe "^commit .+" | sed -e "s/commit \(.\+\)/\1/"`
+    commit=`git log -n 1 | sed -n "s/^commit \(.*\)/\1/p"`
   else
     commit=$1
   fi

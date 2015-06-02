@@ -17,7 +17,7 @@ function main(){
   for file in $folder/*.sh
   do
     local fileName=$(basename "$file")
-    if [ -z "`echo $fileName | grep -Poe "^(_|README)"`" ]
+    if [ -z "`echo $fileName | grep -o "^_\|README"`" ]
     then
       helpMode -h "$fileName"
       echo ""
