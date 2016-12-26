@@ -11,25 +11,38 @@ function main(){
     return
   fi
 
-  if ! $DIR/_clean.sh
+  if [ ! $DIR/_clean.sh ]
   then
     printC "Please commit or stash your current branch changes" cyan
     git status
     return
   fi
 
-  if [ -z "`echo $1 | grep -o "[0-9]\+$"`" ]
+  local parentBranch
+  if [ -z "$2" ]
+  then
+    parentBranch="master"
+  elif [ -z "`git branch | grep -o "$2"`" ]
+  then
+    printC "'$2' branch doesn't exist" red
+    return
+  else
+    parentBranch="$2"
+  fi
+
+
+  if [ -z "`echo $1 | grep -o "[0-9]\+"`" ]
   then
     getIssueNumber $1
   else
     local branch=$(git rev-parse --abbrev-ref HEAD)
-    if [ "$branch" != "master" ]
+    if [ "$branch" != $parentBranch ]
     then
-      git checkout master
+      git checkout $parentBranch
     fi
 
-    git pull origin master
-    if ! $DIR/_clean.sh
+    git pull origin $parentBranch
+    if [ ! $DIR/_clean.sh ]
     then
       git status
       return

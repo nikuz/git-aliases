@@ -5,13 +5,13 @@ source $DIR/_printColor.sh
 source $DIR/_help.sh
 
 function main() {
-  if bash $DIR/_clean.sh
+  if [ ! $DIR/_clean.sh ]
   then
+    git status
+  else
     git fetch origin $1:$1
     git checkout $1
     git branch
-  else
-    git status
   fi
 }
 

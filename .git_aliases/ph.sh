@@ -5,7 +5,7 @@ source $DIR/_printColor.sh
 source $DIR/_help.sh
 
 function main(){
-  if ! bash $DIR/_beforePush.sh
+  if [ ! $DIR/_beforePush.sh ]
   then
     return
   fi

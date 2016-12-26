@@ -9,23 +9,27 @@ function main(){
 
   git pull origin $branch:$branch
   wait $pid
-  if bash $DIR/_clean.sh
+  if [ ! $DIR/_clean.sh ]
   then
+    git status
+  else
     git checkout master
     wait $pid
     git pull origin master:master
     wait $pid
-    if bash $DIR/_clean.sh
+    if [ ! $DIR/_clean.sh ]
     then
+      git status
+    else
       git merge $branch
       wait $pid
-      if bash $DIR/_clean.sh
+      if [ ! $DIR/_clean.sh ]
       then
+        git status
+      else
         git push origin master:master
       fi
     fi
-  else
-    git status
   fi
 }
 

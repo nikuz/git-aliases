@@ -5,13 +5,13 @@ source $DIR/_printColor.sh
 source $DIR/_help.sh
 
 function main(){
-  if ! bash $DIR/_beforePush.sh
+  if [ ! $DIR/_beforePush.sh ]
   then
     return
   fi
 
   local branch=$(git rev-parse --abbrev-ref HEAD)
-  if ! bash $DIR/_clean.sh
+  if [ ! $DIR/_clean.sh ]
   then
     git add .
     local isueNum=$(echo $branch | grep -o "[0-9]\+$")
