@@ -14,7 +14,7 @@ do
   if [ -n "`echo $fileName | grep -o "^__"`" ]
   then
     request=$(bash $file)
-    if [ -n "`echo $request`" ]
+    if [ -n "`echo $request | grep -o "Aborted due to warnings."`" ]
     then
       response=1
       printM "$request"
